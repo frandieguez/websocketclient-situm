@@ -1,0 +1,25 @@
+{
+  "name": "websocketclient",
+  "version": "1.0.0",
+  "description": "Situm websocket client",
+  "main": "index.js",
+  "scripts": {
+    "build": "parcel build src/index.html",
+    "dev": "parcel src/index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bulma": "^0.7.5",
+    "sockjs-client": "^1.4.0",
+    "stomp-websocket": "^2.3.4-next",
+    "webstomp-client": "^1.2.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@parcel/transformer-sass": "^2.0.1",
+    "@types/node": "^16.11.7",
+    "parcel": "^2.0.1",
+    "prettier": "^2.4.1"
+  }
+}

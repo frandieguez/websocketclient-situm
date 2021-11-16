@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
+    />
+    <meta charset="UTF-8" />
+    <title>Situm Geofencing notification service</title>
+    <link href="./style.scss" rel="stylesheet" />
+    <style></style>
+  </head>
+  <body>
+    <nav class="title">
+      <div class="container is-fluid">
+        <h1>Geofence IN/OUT notification service</h1>
+      </div>
+    </nav>
+    <div id="welcome-page" class="container is-fluid">
+      <div class="columns">
+        <div class="form column is-one-quarter-widescreen is-one-fifth-tablet">
+          <div class="field">
+            <label for="domainInput" class="label is-fullwidth"> Domain </label>
+            <input
+              type="url"
+              id="domainInput"
+              name="domain"
+              class="input is-fullwidth"
+              value="https://dashboard.situm.com"
+              placeholder="https://dashboard.situm.com"
+            />
+          </div>
+
+          <div class="field">
+            <label for="jwtInput" class="is-fullwidth label"> JWT </label>
+            <textarea
+              type="text"
+              id="jwtInput"
+              name="jwt"
+              class="input is-fullwidth"
+              style="height: 230px"
+              placeholder="JWT"
+            ></textarea>
+          </div>
+
+          <a id="connectBtn" href="#" class="button is-info is-fullwidth"
+            >Connect</a
+          >
+          <a
+            id="disconnectBtn"
+            href="#"
+            class="button is-danger is-hidden is-fullwidth"
+            disabled="true"
+            >Disconnect</a
+          >
+        </div>
+        <div class="in-out-notification column">
+          <table class="table is-fullwidth">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Area</th>
+                <th>Building</th>
+                <th>Device</th>
+              </tr>
+            </thead>
+            <tbody id="in-out-notification-list"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="index.ts"></script>
+  </body>
+</html>

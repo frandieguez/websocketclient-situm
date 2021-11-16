@@ -1,0 +1,37 @@
+@import "bulma.min.css";
+
+:root {
+  --theme-color-primary: #0a1435;
+}
+
+.is-success {
+  background: green;
+}
+.is-danger {
+  background: red;
+}
+.is-success,
+.is-danger {
+  padding: 2px 10px;
+  border-radius: 3px;
+  color: White;
+}
+
+.title {
+  display: flex;
+  align-content: space-between;
+  background: var(--theme-color-primary);
+  color: white;
+  padding: 1rem;
+  font-size: 1rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+table tbody {
+  max-height: 80vh;
+  overflow-y: scroll;
+}
