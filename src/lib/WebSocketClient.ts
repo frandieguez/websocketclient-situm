@@ -8,9 +8,11 @@ export default class WebSocketClient {
   server = null;
   jwt = null;
   signals = null;
+  channelNane = null;
 
   constructor({
     debug = false,
+    channelName,
     server,
     jwt,
     onChannelSubscribe = (params) => {},
@@ -25,6 +27,7 @@ export default class WebSocketClient {
     this.debug = debug;
     this.server = server;
     this.jwt = jwt;
+    this.channelName = channelName;
     this.signals = {
       onChannelSubscribe,
       onMessageReceived,
@@ -39,7 +42,7 @@ export default class WebSocketClient {
     this.signals.onConnected(params);
 
     this.stompClient.subscribe(
-      "/user/queue/geofencing",
+      this.channelName,
       this.signals.onMessageReceived
     );
   };

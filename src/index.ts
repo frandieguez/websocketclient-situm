@@ -65,6 +65,7 @@ const connect = async () => {
   ws = new WebsocketClient({
     jwt,
     server,
+    channelName: "/user/queue/geofencing",
     onConnected,
     onMessageReceived,
     onDisconnected,
