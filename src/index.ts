@@ -12,10 +12,9 @@ const onDisconnected = (params) => {
 };
 
 const onMessageReceived = (message) => {
-  console.log(message);
   const inOut = document.createElement("TR");
   const messageObj = JSON.parse(message.body);
-  const typeClass = messageObj.event_type === "in" ? "is-success" : "is-danger";
+  const typeClass = messageObj.event_type === "In" ? "is-success" : "is-danger";
   const textNode = `
         <td>${messageObj.timestamp}</td>
         <td><span class="${typeClass}">${messageObj.event_type}</span></td>
@@ -29,16 +28,34 @@ const onMessageReceived = (message) => {
 };
 
 const connect = async () => {
-  const jwt = document.getElementById("jwtInput").value;
-  const server = document.getElementById("domainInput").value;
+  const jwt = (<HTMLInputElement>document.getElementById("jwtInput")).value;
+  const server = (<HTMLInputElement>document.getElementById("domainInput"))
+    .value;
 
-  geofences = await fetch(`${server}/api/v1/geofences`, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + jwt,
-    },
-  });
-  console.log(geofences);
+  if (!jwt || !server) {
+    alert("Please provide a jwt and a server to fetch info from");
+    return;
+  }
+
+  // geofences = await fetch(`${server}/api/v1/geofences`, {
+  //   method: "GET",
+  //   headers: new Headers({
+  //     "Content-Type": "application/json",
+  //     Authorization: "Bearer " + jwt,
+  //   }),
+  // });
+  // console.log(geofences);
+
+  // try {
+  //   for (let index = 0; index < 100; index++) {
+  //     onMessageReceived({
+  //       body: '{"geofence_id":"17c34c8b-7958-42d0-846c-6bce15d6c03f","building_id":"6950","device_id":"253939250359797","event_type":"In","timestamp":"2021-11-16T00:42:31+02:00"}',
+  //     });
+  //   }
+  // } catch (error) {
+  //   console.error(error);
+  // }
+
   ws = new WebsocketClient({
     jwt,
     server,
@@ -59,16 +76,6 @@ const disconnect = () => {
 };
 
 document.addEventListener("DOMContentLoaded", (event) => {
-  // try {
-  //   for (let index = 0; index < 100; index++) {
-  //     onMessageReceived({
-  //       body: '{"geofence_id":"17c34c8b-7958-42d0-846c-6bce15d6c03f","building_id":"6950","device_id":"253939250359797","event_type":"Out","timestamp":"2021-11-16T00:42:31+02:00"}',
-  //     });
-  //   }
-  // } catch (error) {
-  //   console.error(error);
-  // }
-
   // Register events
   document.getElementById("connectBtn").onclick = connect;
   document.getElementById("disconnectBtn").onclick = disconnect;

@@ -43,7 +43,9 @@ export default class WebSocketClient {
   };
 
   connect = () => {
-    this.socket = new SockJS(this.server + "/ws");
+    this.socket = new SockJS(this.server + "/ws", {
+      debug: this.debug,
+    });
     this.stompClient = Stomp.over(this.socket);
     this.stompClient.connect(
       { Authorization: "Bearer " + this.jwt },
