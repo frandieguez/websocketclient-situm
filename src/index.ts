@@ -11,6 +11,12 @@ const onDisconnected = (params) => {
   disconnect();
 };
 
+const onError = (error) => {
+  if (error.type == "close") {
+    onDisconnected(error);
+  }
+};
+
 const onMessageReceived = (message) => {
   const inOut = document.createElement("TR");
   const messageObj = JSON.parse(message.body);
@@ -62,6 +68,8 @@ const connect = async () => {
     onConnected,
     onMessageReceived,
     onDisconnected,
+    onError,
+    debug: false,
   }).connect();
 
   document.getElementById("disconnectBtn").classList.remove("is-hidden");
@@ -76,7 +84,6 @@ const disconnect = () => {
 };
 
 document.addEventListener("DOMContentLoaded", (event) => {
-  // Register events
   document.getElementById("connectBtn").onclick = connect;
   document.getElementById("disconnectBtn").onclick = disconnect;
 });

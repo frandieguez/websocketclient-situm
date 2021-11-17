@@ -17,6 +17,7 @@ export default class WebSocketClient {
     onMessageReceived = (params) => {},
     onConnected = (params) => {},
     onDisconnected = (params) => {},
+    onError = (params) => {},
   }) {
     this.socket = null;
     this.stompClient = null;
@@ -29,6 +30,7 @@ export default class WebSocketClient {
       onMessageReceived,
       onConnected,
       onDisconnected,
+      onError,
     };
   }
 
@@ -49,7 +51,8 @@ export default class WebSocketClient {
     this.stompClient = Stomp.over(this.socket);
     this.stompClient.connect(
       { Authorization: "Bearer " + this.jwt },
-      this.connectionSuccess
+      this.connectionSuccess,
+      this.signals.onError
     );
     console.log({ object: this });
   };
