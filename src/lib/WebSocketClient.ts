@@ -4,7 +4,7 @@ import SockJS from "sockjs-client";
 export default class WebSocketClient {
   socket = null;
   stompClient = null;
-  debug = null;
+  debug = false;
   server = null;
   jwt = null;
   signals = null;
@@ -38,7 +38,7 @@ export default class WebSocketClient {
   }
 
   connectionSuccess = (params) => {
-    console.log(`Connection stablished`);
+    this.debug && console.log(`Connection stablished`);
     this.signals.onConnected(params);
 
     this.stompClient.subscribe(
@@ -51,13 +51,16 @@ export default class WebSocketClient {
     this.socket = new SockJS(this.server + "/ws", {
       debug: this.debug,
     });
-    this.stompClient = Stomp.over(this.socket);
+    this.stompClient = Stomp.over(this.socket, {
+      debug: this.debug,
+    });
     this.stompClient.connect(
       { Authorization: "Bearer " + this.jwt },
       this.connectionSuccess,
       this.signals.onError
     );
-    console.log({ object: this });
+
+    this.debug && console.log("Connection: ", { object: this });
   };
 
   disconnect = () => {
