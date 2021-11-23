@@ -1,8 +1,10 @@
 import WebsocketClient from "./lib/WebSocketClient";
+import jwtDecode from "jwt-decode";
 
 class Page {
   ws = null;
   debug = false;
+  geofences = [];
 
   constructor() {
     this.connect = this.connect.bind(this);
@@ -22,14 +24,18 @@ class Page {
   onMessageReceived = (message) => {
     const inOut = document.createElement("TR");
     const messageObj = JSON.parse(message.body);
-    const typeClass =
-      messageObj.event_type === "In" ? "is-success" : "is-danger";
+    const { geofence_id, building_id, device_id, timestamp, event_type } =
+      messageObj;
+    const typeClass = event_type === "In" ? "is-success" : "is-danger";
+    const geofenceName =
+      this.geofences.find((it) => it.id == geofence_id)?.name || geofence_id; //this.geofences.find();
+
     const textNode = `
-          <td>${messageObj.timestamp}</td>
-          <td><span class="${typeClass}">${messageObj.event_type}</span></td>
-          <td>${messageObj.geofence_id}</td>
-          <td>${messageObj.building_id}</td>
-          <td>${messageObj.device_id}</td>
+          <td>${timestamp}</td>
+          <td><span class="${typeClass}">${event_type}</span></td>
+          <td title="${geofence_id}" data-geofence-id="${geofence_id}">${geofenceName}</td>
+          <td>${building_id}</td>
+          <td>${device_id}</td>
         `;
     inOut.innerHTML = textNode;
 
@@ -56,24 +62,36 @@ class Page {
         return;
       }
 
-      // geofences = fetch(`${server}/api/v1/geofences`, {
-      //   method: "GET",
-      //   headers: new Headers({
-      //     "Content-Type": "application/json",
-      //     Authorization: "Bearer " + jwt,
-      //   }),
-      // }).then((data) => {
-      //   console.log(data);
-      //   try {
-      //     for (let index = 0; index < 100; index++) {
-      //       onMessageReceived({
-      //         body: '{"geofence_id":"17c34c8b-7958-42d0-846c-6bce15d6c03f","building_id":"6950","device_id":"253939250359797","event_type":"In","timestamp":"2021-11-16T00:42:31+02:00"}',
-      //       });
-      //     }
-      //   } catch (error) {
-      //     console.error(error);
-      //   }
-      // });
+      let jwtDecoded = jwtDecode(jwt) as {
+        organization_uuid: string;
+      };
+
+      fetch(
+        `${server}/api/v1/geofences/search?` +
+          new URLSearchParams({
+            organization_id: jwtDecoded.organization_uuid,
+          }),
+        {
+          method: "GET",
+          headers: new Headers({
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + jwt,
+          }),
+        }
+      ).then(async (data: any) => {
+        let geofences = await data.json();
+        this.geofences = geofences.data;
+        console.log("Received list of geofences", { geofences });
+        // try {
+        //   for (let index = 0; index < 100; index++) {
+        //     this.onMessageReceived({
+        //       body: '{"geofence_id":"0e15cef8-c121-431a-8536-4b9638fbd449","building_id":"6950","device_id":"253939250359797","event_type":"In","timestamp":"2021-11-16T00:42:31+02:00"}',
+        //     });
+        //   }
+        // } catch (error) {
+        //   console.error(error);
+        // }
+      });
 
       // Start WS client
       this.ws = new WebsocketClient({
