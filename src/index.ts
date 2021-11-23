@@ -1,6 +1,14 @@
 import WebsocketClient from "./lib/WebSocketClient";
 import jwtDecode from "jwt-decode";
 
+function decimalToHexString(number) {
+  if (number < 0) {
+    number = 0xffffffff + number + 1;
+  }
+
+  return number.toString(16).toUpperCase();
+}
+
 class Page {
   ws = null;
   debug = false;
@@ -35,7 +43,9 @@ class Page {
           <td><span class="${typeClass}">${event_type}</span></td>
           <td title="${geofence_id}" data-geofence-id="${geofence_id}">${geofenceName}</td>
           <td>${building_id}</td>
-          <td>${device_id}</td>
+          <td data-device-id-hex="${decimalToHexString(
+            16
+          )}" title="Hex: ${decimalToHexString(device_id)}">${device_id}</td>
         `;
     inOut.innerHTML = textNode;
 
