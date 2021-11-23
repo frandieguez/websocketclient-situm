@@ -8,7 +8,8 @@ export default class WebSocketClient {
   server = null;
   jwt = null;
   signals = null;
-  channelNane = null;
+  channelName = null;
+  channelSubscription = null;
 
   constructor({
     debug = false,
@@ -41,7 +42,7 @@ export default class WebSocketClient {
     this.debug && console.log(`Connection stablished`);
     this.signals.onConnected(params);
 
-    this.stompClient.subscribe(
+    this.channelSubscription = this.stompClient.subscribe(
       this.channelName,
       this.signals.onMessageReceived
     );
@@ -64,6 +65,7 @@ export default class WebSocketClient {
   };
 
   disconnect = () => {
+    this.stompClient.unsubscribe(this.channelSubscription);
     this.stompClient.disconnect(this.signals.onDisconnected, {});
   };
 }
