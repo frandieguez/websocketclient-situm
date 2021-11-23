@@ -8,6 +8,10 @@
   }
 }
 
+#welcome-page {
+  padding: 0 1rem;
+}
+
 :root {
   --theme-color-primary: #0a1435;
 }
@@ -34,6 +38,9 @@
   font-size: 1rem;
 }
 
+.field.is-inline > * {
+  display: inline-block;
+}
 .form {
   display: flex;
   flex-direction: column;

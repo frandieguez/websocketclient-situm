@@ -5,17 +5,11 @@ export default class WebSocketClient {
   socket = null;
   stompClient = null;
   debug = false;
-  server = null;
-  jwt = null;
   signals = null;
-  channelName = null;
   channelSubscription = null;
 
   constructor({
     debug = false,
-    channelName,
-    server,
-    jwt,
     onChannelSubscribe = (params) => {},
     onMessageReceived = (params) => {},
     onConnected = (params) => {},
@@ -26,9 +20,6 @@ export default class WebSocketClient {
     this.stompClient = null;
 
     this.debug = debug;
-    this.server = server;
-    this.jwt = jwt;
-    this.channelName = channelName;
     this.signals = {
       onChannelSubscribe,
       onMessageReceived,
@@ -38,30 +29,29 @@ export default class WebSocketClient {
     };
   }
 
-  connectionSuccess = (params) => {
-    this.debug && console.log(`Connection stablished`);
-    this.signals.onConnected(params);
+  connectionSuccess = ({ server, jwt, channelName }) => {
+    this.signals.onConnected({ server, jwt });
 
     this.channelSubscription = this.stompClient.subscribe(
-      this.channelName,
+      channelName,
       this.signals.onMessageReceived
     );
+
+    this.signals.onChannelSubscribe({ channelName });
   };
 
-  connect = () => {
-    this.socket = new SockJS(this.server + "/ws", {
+  connect = ({ channelName, server, jwt }) => {
+    this.socket = new SockJS(server + "/ws", {
       debug: this.debug,
     });
     this.stompClient = Stomp.over(this.socket, {
       debug: this.debug,
     });
     this.stompClient.connect(
-      { Authorization: "Bearer " + this.jwt },
-      this.connectionSuccess,
+      { Authorization: "Bearer " + jwt },
+      () => this.connectionSuccess({ server, jwt, channelName }),
       this.signals.onError
     );
-
-    this.debug && console.log("Connection: ", { object: this });
   };
 
   disconnect = () => {
